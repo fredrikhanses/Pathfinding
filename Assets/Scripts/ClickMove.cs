@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Search;
-using UnityEngine.SceneManagement;
 
 namespace control
 {
@@ -16,7 +15,7 @@ namespace control
         public float speed = 5.0f;
         public static int mapSizeX = 20;
         public static int mapSizeY = 20;
-        public static int obstacleCount = 150;
+        public static int obstacleCount = 100;
         public int bulletPickUps = 10;
         public int startNumber = 21;
         public int goalNumber = 5;
@@ -31,15 +30,18 @@ namespace control
         public Sprite bulletSprite;
         public float ballForce = 500f;
         public static bool bulletSpawned = false;
-        public static int winSceneIndex = 1;
-        public static int loseSceneIndex = 2;
-        public static Location obstaclePosition = new Location(-1,-1);
+        public static Location obstaclePosition = new Location(-1, -1);
         public static Location pickUpPosition = new Location(-1, -1);
         Location oldLocation;
 
-        private void Start()
+        private void Awake()
         {
             Initialization();
+        }
+        private void Start()
+        {
+            GameRules.instance.OnAmmoAdded();
+            GameRules.instance.OnAmmoAdded();
         }
 
         private void Update()
@@ -57,13 +59,15 @@ namespace control
 
         private void Initialization()
         {
-            worldPoint = player.transform.position;
+            ResetPath();
+            ResetGrid();
             mainCamera = Camera.main;
             CreateObstacles();
             CreateBoard();
             CreateWinPoint();
             CreatePickUps();
-            GameRules.instance.OnAmmoAdded();
+            MovePlayer();
+            worldPoint = player.transform.position;
         }
 
         private void InputHandler()
@@ -87,6 +91,27 @@ namespace control
                 SearchShortestPath();
                 ResetWorldPoint();
             }
+        }
+
+        private void MovePlayer()
+        {
+            int randomX = Random.Range(0, mapSizeX);
+            int randomY = Random.Range(0, mapSizeY);
+            while (grid.obstacles.Contains(new Location(randomX, randomY)))
+            {
+                randomX = Random.Range(0, mapSizeX);
+                randomY = Random.Range(0, mapSizeY);
+            }
+            player.transform.position = new Vector2(randomX, randomY);
+        }
+
+        private void ResetGrid()
+        {
+            grid.obstacles.Clear();
+            grid.slowDowns.Clear();
+            grid.pickUps.Clear();
+            grid.pathing.Clear();
+            grid.AIPathing.Clear();
         }
 
         private void ResetPath()
@@ -151,23 +176,23 @@ namespace control
             }
             if (player.transform.position == winPosition)
             {
-                GameWin();
+                Debug.Log("WIN");
+                GameRules.instance.GameWin();
             }
         }
 
         #region CreateObjects
         private void CreateBoard()
         {
-            int index = 0;
             for (int j = 0; j < mapSizeY; j++)
             {
                 for (int i = 0; i < mapSizeX; i++)
                 {
                     GameObject floor = new GameObject("Floor", typeof(SpriteRenderer));
-                    floor.transform.position = new Vector3(i, j, 0);
+                    floor.transform.position = new Vector2(i, j);
                     floor.GetComponent<SpriteRenderer>().sprite = floorSprite;
                     floor.GetComponent<SpriteRenderer>().color = Color.white;
-
+                    /*
                     if (FiftyFifty())
                     {
                         int randomX = Random.Range(0, mapSizeX);
@@ -184,7 +209,7 @@ namespace control
                         forest.GetComponent<SpriteRenderer>().color = Color.green;
                         forest.GetComponent<SpriteRenderer>().sortingLayerName = "Obstacle";
                     }
-                    index++;
+                    */
                 }
             }
         }
@@ -322,16 +347,6 @@ namespace control
         {
             worldPoint.x = Mathf.RoundToInt(worldPoint.x);
             worldPoint.y = Mathf.RoundToInt(worldPoint.y);
-        }
-
-        private void GameWin()
-        {
-            SceneManager.LoadScene(winSceneIndex);
-        }
-
-        public static void GameLose()
-        {
-            SceneManager.LoadScene(loseSceneIndex);
         }
 
         public bool FiftyFifty()

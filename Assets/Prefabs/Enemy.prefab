@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 434394326971418368}
   m_Layer: 0
   m_Name: Enemy
-  m_TagString: Player
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -92,7 +92,7 @@ CircleCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -111,7 +111,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemy: {fileID: 434394326971418431}
-  numberOfEnemies: 1
+  numberOfEnemies: 3
   speed: 3
   startNumber: 21
   goalNumber: 5
