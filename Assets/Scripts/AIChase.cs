@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Search;
-using control;
+using Control;
 
 namespace AIcontrol
 {
@@ -12,7 +12,9 @@ namespace AIcontrol
         Vector3 enemyPosition;
         public int numberOfEnemies = 3;
         Vector3 targetPosition;
-        public float speed = 2.0f;
+        public float speed = 3.0f;
+        private float normalSpeed = 3.0f;
+        private float slowdownSpeed = 1.0f;
         public int startNumber = 21;
         public int goalNumber = 5;
         LinkedList<Location> path = new LinkedList<Location>();
@@ -49,7 +51,7 @@ namespace AIcontrol
             ResetPath();
             targetPosition = ClickMove.playerPosition;
             RoundToInt(ref targetPosition);
-            MoveEnemy();
+            SetEnemyStartPosition();
             //CreateEnemy();
         }
 
@@ -87,6 +89,14 @@ namespace AIcontrol
 
         private void MovementHandler()
         {
+            if (ClickMove.grid.slowDowns.Contains(new Location((int)targetPosition.x, (int)targetPosition.y)))
+            {
+                speed = slowdownSpeed;
+            }
+            else
+            {
+                speed = normalSpeed;
+            }
             if (targetPosition != enemy.transform.position)
             {
                 if(steps == 0)
@@ -117,7 +127,7 @@ namespace AIcontrol
             }
         }
 
-        private void MoveEnemy()
+        private void SetEnemyStartPosition()
         {
             int randomX = Random.Range(1, ClickMove.mapSizeX);
             int randomY = Random.Range(1, ClickMove.mapSizeY);

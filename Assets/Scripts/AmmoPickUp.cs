@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using control;
+using Control;
 using Search;
 
 public class AmmoPickUp : MonoBehaviour

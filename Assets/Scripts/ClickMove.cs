@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Search;
 
-namespace control
+namespace Control
 {
     public class ClickMove : MonoBehaviour
     {
@@ -13,6 +13,8 @@ namespace control
         Vector3 shootPoint;
         Camera mainCamera;
         public float speed = 5.0f;
+        private float normalSpeed = 5.0f;
+        private float slowdownSpeed = 2.0f;
         public static int mapSizeX = 20;
         public static int mapSizeY = 20;
         public static int obstacleCount = 100;
@@ -51,10 +53,14 @@ namespace control
 
         private void FixedUpdate()
         {
-            playerPosition = player.transform.position;
             ShowPath();
             NextStep();
             MovementHandler();  
+        }
+
+        private void LateUpdate()
+        {
+            playerPosition = player.transform.position;
         }
 
         private void Initialization()
@@ -66,7 +72,7 @@ namespace control
             CreateBoard();
             CreateWinPoint();
             CreatePickUps();
-            MovePlayer();
+            SetPlayerStartPosition();
             worldPoint = player.transform.position;
         }
 
@@ -93,7 +99,7 @@ namespace control
             }
         }
 
-        private void MovePlayer()
+        private void SetPlayerStartPosition()
         {
             int randomX = Random.Range(0, mapSizeX);
             int randomY = Random.Range(0, mapSizeY);
@@ -156,6 +162,14 @@ namespace control
 
         private void MovementHandler()
         {
+            if(grid.slowDowns.Contains(new Location((int)worldPoint.x, (int)worldPoint.y)))
+            {
+                speed = slowdownSpeed;
+            }
+            else
+            {
+                speed = normalSpeed;
+            }
             if (worldPoint != player.transform.position)
             {
                 float step = speed * Time.deltaTime;
@@ -192,8 +206,8 @@ namespace control
                     floor.transform.position = new Vector2(i, j);
                     floor.GetComponent<SpriteRenderer>().sprite = floorSprite;
                     floor.GetComponent<SpriteRenderer>().color = Color.white;
-                    /*
-                    if (FiftyFifty())
+                    
+                    if (CreateSlowdown())
                     {
                         int randomX = Random.Range(0, mapSizeX);
                         int randomY = Random.Range(0, mapSizeY);
@@ -209,7 +223,6 @@ namespace control
                         forest.GetComponent<SpriteRenderer>().color = Color.green;
                         forest.GetComponent<SpriteRenderer>().sortingLayerName = "Obstacle";
                     }
-                    */
                 }
             }
         }
@@ -349,9 +362,9 @@ namespace control
             worldPoint.y = Mathf.RoundToInt(worldPoint.y);
         }
 
-        public bool FiftyFifty()
+        public bool CreateSlowdown()
         {
-            int random = Random.Range(0, 2) * 2 - 1;
+            int random = Random.Range(0, 5);
             if (random == 1)
             {
                 return true;

@@ -161,7 +161,7 @@ namespace Search
         {
             if (slowDowns.Contains(b))
             {
-                return 5;
+                return 3;
             }
             else
             {
@@ -183,7 +183,7 @@ namespace Search
     }
 
 
-    public class PriorityQueue<T>
+    public class PriorityQueue<data>
     {
         // I'm using an unsorted array for this example, but ideally this
         // would be a binary heap. There's an open issue for adding a binary
@@ -195,19 +195,19 @@ namespace Search
         // * http://xfleury.github.io/graphsearch.html
         // * http://stackoverflow.com/questions/102398/priority-queue-in-net
 
-        private List<Tuple<T, int>> elements = new List<Tuple<T, int>>();
+        private List<Tuple<data, int>> elements = new List<Tuple<data, int>>();
 
         public int Count
         {
             get { return elements.Count; }
         }
 
-        public void Enqueue(T item, int priority)
+        public void Enqueue(data item, int priority)
         {
             elements.Add(Tuple.Create(item, priority));
         }
 
-        public T Dequeue()
+        public data Dequeue()
         {
             int bestIndex = 0;
 
@@ -219,7 +219,7 @@ namespace Search
                 }
             }
 
-            T bestItem = elements[bestIndex].Item1;
+            data bestItem = elements[bestIndex].Item1;
             elements.RemoveAt(bestIndex);
             return bestItem;
         }
@@ -241,9 +241,9 @@ namespace Search
 
         // Note: a generic version of A* would abstract over Location and
         // also Heuristic
-        static public int Heuristic(Location a, Location b)
+        static public int Heuristic(Location start, Location goal)
         {
-            return Math.Abs(a.x - b.x) + Math.Abs(a.y - b.y);
+            return Math.Abs(start.x - goal.x) + Math.Abs(start.y - goal.y);
         }
 
         public LinkedList<Location> AStar(IWeightedGraph<Location> graph, Location start, Location goal)
