@@ -3,23 +3,14 @@ using System;
 
 namespace Search
 {
-    
-
-    // A* needs only a WeightedGraph and a location type L, and does *not*
-    // have to be a grid. However, in the example code I am using a grid.
     public interface IWeightedGraph<L>
     {
         int Cost(Location a, Location b);
         IEnumerable<Location> Neighbors(Location id);
     }
 
-
     public struct Location
     {
-        // Implementation notes: I am using the default Equals but it can
-        // be slow. You'll probably want to override both Equals and
-        // GetHashCode in a real project.
-
         public readonly int x, y;
         public Location(int x, int y)
         {
@@ -28,13 +19,8 @@ namespace Search
         }
     }
 
-
     public class SquareGrid : IWeightedGraph<Location>
     {
-        // Implementation notes: I made the fields public for convenience,
-        // but in a real project you'll probably want to follow standard
-        // style and make them private.
-
         public static readonly Location[] directions = new[]
         {
             new Location(1, 0),
@@ -105,19 +91,8 @@ namespace Search
         }
     }
 
-
     public class PriorityQueue<data>
     {
-        // I'm using an unsorted array for this example, but ideally this
-        // would be a binary heap. There's an open issue for adding a binary
-        // heap to the standard C# library: https://github.com/dotnet/corefx/issues/574
-        //
-        // Until then, find a binary heap class:
-        // * https://github.com/BlueRaja/High-Speed-Priority-Queue-for-C-Sharp
-        // * http://visualstudiomagazine.com/articles/2012/11/01/priority-queues-with-c.aspx
-        // * http://xfleury.github.io/graphsearch.html
-        // * http://stackoverflow.com/questions/102398/priority-queue-in-net
-
         private List<Tuple<data, int>> elements = new List<Tuple<data, int>>();
 
         public int Count
@@ -148,22 +123,11 @@ namespace Search
         }
     }
 
-
-    /* NOTE about types: in the main article, in the Python code I just
-     * use numbers for costs, heuristics, and priorities. In the C++ code
-     * I use a typedef for this, because you might want int or double or
-     * another type. In this C# code I use double for costs, heuristics,
-     * and priorities. You can use an int if you know your values are
-     * always integers, and you can use a smaller size number if you know
-     * the values are always small. */
-
     public class AStarSearch
     {
         public Dictionary<Location, Location> cameFrom = new Dictionary<Location, Location>();
         public Dictionary<Location, int> costSoFar = new Dictionary<Location, int>();
 
-        // Note: a generic version of A* would abstract over Location and
-        // also Heuristic
         static public int Heuristic(Location start, Location goal)
         {
             return Math.Abs(start.x - goal.x) + Math.Abs(start.y - goal.y);
@@ -199,6 +163,7 @@ namespace Search
                     }
                 }
             }
+
             if (current.Equals(goal))
             {
                 while (!(current.Equals(start)))

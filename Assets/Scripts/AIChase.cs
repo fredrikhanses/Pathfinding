@@ -52,7 +52,6 @@ namespace AIcontrol
             targetPosition = ClickMove.playerPosition;
             RoundToInt(ref targetPosition);
             SetEnemyStartPosition();
-            //CreateEnemy();
         }
 
         private void ResetPath()
@@ -121,7 +120,6 @@ namespace AIcontrol
                 }
                 if (Vector3.Distance(enemy.transform.position, ClickMove.playerPosition) < 1f)
                 {
-                    Debug.Log("LOSE");
                     GameRules.instance.GameLose();
                 }
             }
@@ -160,7 +158,6 @@ namespace AIcontrol
                     enemy.GetComponent<SpriteRenderer>().sortingLayerName = "Obstacle";
                     enemy.AddComponent<AIChase>();
                     enemy.GetComponent<AIChase>().enemy = GameObject.FindGameObjectWithTag("Enemy");
-                    //enemy.GetComponent<AIChase>().pathingSprite = Sprite.
                 }
             }
         }

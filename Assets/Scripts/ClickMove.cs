@@ -83,14 +83,14 @@ namespace Control
                 RemoveObstacle(obstaclePosition);
                 CreateBullet();
             }
-            if (Input.GetMouseButtonDown(0)) // && worldPoint == player.transform.position)
+            if (Input.GetMouseButtonDown(0))
             {
                 ResetPath();
                 UpdateWorldPoint();
                 SearchShortestPath();
                 ResetWorldPoint();
             }
-            if (Input.GetMouseButtonDown(2)) //&& worldPoint == player.transform.position)
+            if (Input.GetMouseButtonDown(2))
             {
                 ResetPath();
                 worldPoint = winPosition;
@@ -190,7 +190,6 @@ namespace Control
             }
             if (player.transform.position == winPosition)
             {
-                Debug.Log("WIN");
                 GameRules.instance.GameWin();
             }
         }
@@ -280,16 +279,9 @@ namespace Control
             {
                 CreateWinPoint();
             }
-            else if (randomX == 0 && randomY == 0)
+            else if (grid.slowDowns.Contains(new Location(randomX, randomY)))
             {
-                randomX += 1;
-                randomY += 1;
-                winPosition = new Vector2(randomX, randomY);
-                GameObject win = new GameObject("Win", typeof(SpriteRenderer));
-                win.transform.position = winPosition;
-                win.GetComponent<SpriteRenderer>().sprite = winSprite;
-                win.GetComponent<SpriteRenderer>().color = Color.yellow;
-                win.GetComponent<SpriteRenderer>().sortingLayerName = "Obstacle";
+                CreateWinPoint();
             }
             else
             {
@@ -299,6 +291,7 @@ namespace Control
                 win.GetComponent<SpriteRenderer>().sprite = winSprite;
                 win.GetComponent<SpriteRenderer>().color = Color.yellow;
                 win.GetComponent<SpriteRenderer>().sortingLayerName = "Obstacle";
+                win.AddComponent<Wiggle>();
             }
         }
 
